@@ -1,0 +1,14 @@
+                || #Threads    Counter   Runtime[ms]
+====================================================
+NoSync          ||    1         -4824       38.55064
+Sync            ||    1             0      142.99909
+ReentrantLock   ||    1             0      124.33861
+NoSync          ||    2         27771       40.65322
+Sync            ||    2             0      297.83027
+ReentrantLock   ||    2             0      239.39190
+NoSync          ||    4        -68545       45.99078
+Sync            ||    4             0      547.95740
+ReentrantLock   ||    4             0      353.75651
+NoSync          ||    8         72046       57.56487
+Sync            ||    8             0     1038.98302
+ReentrantLock   ||    8             0      569.81727
