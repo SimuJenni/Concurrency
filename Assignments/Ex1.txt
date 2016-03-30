@@ -1,3 +1,5 @@
+The following table reports results after one run on the Sun Fire machine:
+
                 || #Threads    Counter   Runtime[ms]
 ====================================================
 NoSync          ||    1         -4824       38.55064
@@ -12,3 +14,24 @@ ReentrantLock   ||    4             0      353.75651
 NoSync          ||    8         72046       57.56487
 Sync            ||    8             0     1038.98302
 ReentrantLock   ||    8             0      569.81727
+
+
+The following table shows the runtime difference to the baseline Ex1NoSync:
+
+		||  #Threads	|| SpeedUp[ms]
+============================================
+Sync		||	1	   -104.44845
+ReentrantLock	||	1	    -85.78797
+Sync		||	2	   -257.17705
+ReentrantLock	||	2	   -198.73868
+Sync		||	4	   -501.96662
+ReentrantLock	||	4	   -307.76573
+Sync		||	8	   -981.41815
+ReentrantLock	||	8	   -512.25240
+
+We observe Sync has a significantly higher runtime compared to ReentrantLock. Clearly both Sync and ReentrantLock run much slower than NoSync, hence the negative SpeedUp values.
+
+Machine Specs (Sun Fire):
+32 x sparcv9 @ 1200MHz
+(according to $psrinfo -v)
+
