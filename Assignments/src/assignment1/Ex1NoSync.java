@@ -19,7 +19,7 @@ public class Ex1NoSync {
 }
 
 class SharedCounterNoSync implements Counter {
-	private int counter = 0;
+	private long counter = 0;
 
 	public void decrement() {
 		counter--;
@@ -29,7 +29,7 @@ class SharedCounterNoSync implements Counter {
 		counter++;
 	}
 
-	public int getCounter() {
+	public long getCounter() {
 		return counter;
 	}
 }

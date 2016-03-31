@@ -6,6 +6,6 @@ public interface Counter {
 	
 	public void decrement();
 	
-	public int getCounter();
+	public long getCounter();
 
 }

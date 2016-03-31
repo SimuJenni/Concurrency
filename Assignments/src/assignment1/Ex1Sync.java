@@ -29,7 +29,7 @@ class SharedCounterSync implements Counter {
 		counter++;
 	}
 
-	public int getCounter() {
+	public long getCounter() {
 		return counter;
 	}
 }

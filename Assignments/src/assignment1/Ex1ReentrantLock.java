@@ -23,7 +23,7 @@ public class Ex1ReentrantLock {
 class SharedCounterLock implements Counter {
 
 	ReentrantLock lock = new ReentrantLock();
-	int counter = 0;
+	long counter = 0;
 
 	public void decrement() {
 		lock.lock();
@@ -43,7 +43,7 @@ class SharedCounterLock implements Counter {
 		}
 	}
 
-	public int getCounter() {
+	public long getCounter() {
 		return counter;
 	}
 }
