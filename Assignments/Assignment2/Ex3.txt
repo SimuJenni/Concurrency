@@ -1,0 +1,14 @@
+Figure 1:
+
+Clearly linearizable! Consider for example the linearization:
+r.write(1) -> r.read(1) -> r.write(2) -> r.read(2)
+
+Therefore also sequentially consistent (linearizable implies SQ)...
+
+Figure 2:
+
+Not sequentially consistent (and not linearizable)!
+
+We can not re-order operations done by thread 2, so r.write(1) must happen before
+r.read(2). Since there is no r.write(1) operation in thread 2 its impossible to
+have r.read(1).

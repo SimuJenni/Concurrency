@@ -15,7 +15,6 @@ public class Ex1Runner {
 	public void startAndRun(int n, int m, int numItr) throws InterruptedException{
 		ExecutorService executor = Executors.newFixedThreadPool(n + m);
 
-		long startTime = System.nanoTime();
 
 		// Threads of type 1
 		for (int j = 0; j < n; j++) {
@@ -28,6 +27,8 @@ public class Ex1Runner {
 			Thread2 task2 = new Thread2(counter, numItr);
 			executor.execute(task2);
 		}
+		
+		long startTime = System.nanoTime();
 
 		// Wait till all threads have stopped and output final counter value
 		executor.shutdown();

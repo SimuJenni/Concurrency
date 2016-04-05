@@ -1,0 +1,18 @@
+Consider the case of three threads A, t2 and t3.
+Suppose that we are in the situation:
+level[A] = 1, level[B] = 0, level[C] = 2, victim[1] = A, victim[2] = C
+
+Consider the following history:
+1. C enters CS -> level[C] = 0
+2. B sets level[B] = 1 and victim[1] = B
+3. C sets level[C] = 1 and victim[1] = C
+4. B enters level 1
+5. B sets level[B] = 2 and victim[2] = B
+
+Note that B has overtake A in this example! A was at the doorway of level 1
+first (e.g level[A] = 1, victim[1] = A) but B entered level 1 while A still
+waits at the doorway.
+
+The algorithm could be made fair by including a timestamp at the doorway which
+has to be compared -> oldest thread per level can leave first... (No need for 
+victim flag in this case)

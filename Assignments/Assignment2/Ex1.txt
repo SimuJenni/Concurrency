@@ -1,0 +1,84 @@
+The results presented here are averages over 50 runs!
+
+Number of Threads: 4
+Volatile Counter: false
+Solaris Processor-Affininty: false
+Runtime [ms]: 189.315628
+Final Counter: 300000
+Minimum #Accesses: 74714
+Maximum #Accesses: 75304
+==================================
+Number of Threads: 8
+Volatile Counter: false
+Solaris Processor-Affininty: false
+Runtime [ms]: 364.769384
+Final Counter: 300000
+Minimum #Accesses: 37351
+Maximum #Accesses: 37622
+==================================
+Number of Threads: 4
+Volatile Counter: true
+Solaris Processor-Affininty: false
+Runtime [ms]: 195.51825399999998
+Final Counter: 300000
+Minimum #Accesses: 74794
+Maximum #Accesses: 75265
+==================================
+Number of Threads: 8
+Volatile Counter: true
+Solaris Processor-Affininty: false
+Runtime [ms]: 369.70995999999997
+Final Counter: 300000
+Minimum #Accesses: 37400
+Maximum #Accesses: 37615
+==================================
+
+Changed counter-goal for 1 processor case (takes too long otherwise)
+
+Number of Threads: 4
+Volatile Counter: false
+Solaris Processor-Affininty: true
+Runtime [ms]: 14.610975999999999
+Final Counter: 1000
+Minimum #Accesses: 0
+Maximum #Accesses: 1000
+==================================
+Number of Threads: 8
+Volatile Counter: false
+Solaris Processor-Affininty: true
+Runtime [ms]: 663.718399
+Final Counter: 1000
+Minimum #Accesses: 1
+Maximum #Accesses: 988
+==================================
+Number of Threads: 4
+Volatile Counter: true
+Solaris Processor-Affininty: true
+Runtime [ms]: 1196.130514
+Final Counter: 1000
+Minimum #Accesses: 4
+Maximum #Accesses: 985
+==================================
+Number of Threads: 8
+Volatile Counter: true
+Solaris Processor-Affininty: true
+Runtime [ms]: 25.334049999999998
+Final Counter: 1000
+Minimum #Accesses: 0
+Maximum #Accesses: 1000
+
+
+Running in the 1 processor setting with a high counter-goal leads to very high
+run-times (see run 7 for example)! My guess would be that as soon as two or more
+threads are running and competing for the lock we get a high overhead from the
+lock-handling (especially when the time spent in the CS is much smaller compared
+to the time for lock-handling (as is the case with incrementing and decrementing
+a counter).
+
+We can’t observe a clear influence of the keyword volatile in the performed tests. 
+More runs would maybe have to be performed to get a better estimate of the
+difference in run-time between the algorithms with or without volatile.
+Looking at the multiprocessor runs, we can observe a very slight increase in
+run-time.
+
+Clearly more threads result in longer run-times as expected.

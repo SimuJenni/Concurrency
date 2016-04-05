@@ -15,8 +15,6 @@ public class Ex2 {
 			ExecutorService executor = Executors.newFixedThreadPool(2 * numThreads);
 			CircularBuffer sharedBuffer = new CircularBuffer(buffSize);
 
-			long startTime = System.nanoTime();
-
 			// Start threads
 			for (int j = 0; j < numThreads; j++) {
 				ConsumeThread consumer = new ConsumeThread(sharedBuffer);
@@ -24,6 +22,8 @@ public class Ex2 {
 				executor.execute(consumer);
 				executor.execute(producer);
 			}
+			
+			long startTime = System.nanoTime();
 
 			// Wait till all threads have stopped and output final counter value
 			executor.shutdown();

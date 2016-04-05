@@ -10,60 +10,78 @@ import assignment1.Counter;
 public class Ex1 {
 
 	public static void main(String[] args) throws InterruptedException {
-		// Runtime args: (int numThreads, int maxVal, boolean volatile, boolean solarisAffinity)
-		
+		// Runtime args: (int numThreads, int maxVal, boolean volatile, boolean
+		// solarisAffinity)
+
 		int numThreads = Integer.parseInt(args[0]);
 		int maxVal = Integer.parseInt(args[1]);
 		boolean vol = Boolean.parseBoolean(args[2]);
 		boolean solarisAffinity = Boolean.parseBoolean(args[3]);
-		
+		int runs = 1;
+		if (args.length > 4) {
+			runs = Integer.parseInt(args[4]);
+		}
+
+		long runtime = 0;
+		int finalCounter = 0;
+		int sumMins = 0;
+		int sumMaxs = 0;
+
 		System.out.println("Number of Threads: " + numThreads);
 		System.out.println("Volatile Counter: " + vol);
 		System.out.println("Solaris Processor-Affininty: " + solarisAffinity);
 
-		PetersonLock lock = new PetersonLock(numThreads);
-		
-		Counter sharedCounter;
-		
-		if (vol) {
-			sharedCounter = new VolatileCounter();
-		} else {
-			sharedCounter = new SimpleCounter();
-		}
-		
-		if (solarisAffinity) {
-			setSolarisAffinity();
-		}
-		
-		ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+		for (int r = 0; r < runs; r++) {
 
-		long startTime = System.nanoTime();
-		
-		int[] accesses = new int[numThreads];
+			PetersonLock lock = new PetersonLock(numThreads);
+			Counter sharedCounter;
 
-		// Start threads
-		for (int i = 0; i < numThreads; i++) {
-			IncrementerThread thread = new IncrementerThread(sharedCounter, lock, maxVal, accesses);
-			executor.execute(thread);
-		}
-
-		// Wait till all threads have stopped and output final counter value
-		executor.shutdown();
-		boolean finshed = executor.awaitTermination(5, TimeUnit.MINUTES);
-		if (finshed) {
-			long runtime = System.nanoTime() - startTime;
-			System.out.println("Runtime [ms]: " + runtime * 0.000001);
-			System.out.println("Final Counter: " + sharedCounter.getCounter());
-			// Gather stats
-			int minAcc = maxVal;
-			int maxAcc = 0;
-			for (int i = 0; i < accesses.length; i++) {
-				minAcc = accesses[i]<minAcc ? accesses[i] : minAcc;
-				maxAcc = accesses[i]>maxAcc ? accesses[i] : maxAcc;
+			if (vol) {
+				sharedCounter = new VolatileCounter();
+			} else {
+				sharedCounter = new SimpleCounter();
 			}
-			System.out.println("Minimum #Accesses: " + minAcc);
-			System.out.println("Maximum #Accesses: " + maxAcc);
+
+			if (solarisAffinity) {
+				setSolarisAffinity();
+			}
+
+			ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+
+			int[] accesses = new int[numThreads];
+
+			// Start threads
+			for (int i = 0; i < numThreads; i++) {
+				IncrementerThread thread = new IncrementerThread(sharedCounter, lock, maxVal, accesses);
+				executor.execute(thread);
+			}
+
+			long startTime = System.nanoTime();
+			
+			// Wait till all threads have stopped and output final counter value
+			executor.shutdown();
+			boolean finshed = executor.awaitTermination(5, TimeUnit.MINUTES);
+			if (finshed) {
+				runtime += System.nanoTime() - startTime;
+				finalCounter += sharedCounter.getCounter();
+				// Gather stats
+				int maxAcc = 0;
+				int minAcc = maxVal;
+				for (int i = 0; i < accesses.length; i++) {
+					minAcc = accesses[i] < minAcc ? accesses[i] : minAcc;
+					maxAcc = accesses[i] > maxAcc ? accesses[i] : maxAcc;
+				}
+				sumMins += minAcc;
+				sumMaxs += maxAcc;
+			}
+
 		}
+
+		// Print average stats
+		System.out.println("Runtime [ms]: " + runtime / runs * 0.000001);
+		System.out.println("Final Counter: " + finalCounter / runs);
+		System.out.println("Minimum #Accesses: " + sumMins / runs);
+		System.out.println("Maximum #Accesses: " + sumMaxs / runs);
 	}
 
 	public static void setSolarisAffinity() {
@@ -97,7 +115,7 @@ class IncrementerThread implements Runnable {
 		stopValue = maxVal;
 		this.accesses = accesses;
 	}
-	
+
 	public void run() {
 		while (true) {
 			try {
