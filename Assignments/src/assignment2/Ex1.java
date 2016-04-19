@@ -10,16 +10,35 @@ import assignment1.Counter;
 public class Ex1 {
 
 	public static void main(String[] args) throws InterruptedException {
-		// Runtime args: (int numThreads, int maxVal, boolean volatile, boolean
-		// solarisAffinity)
+		/*
+		 * Runtime arguments: (int numThreads, int counterGoal, boolean
+		 * volatile, boolean solarisAffinity, int numRuns)
+		 * 
+		 */
 
-		int numThreads = Integer.parseInt(args[0]);
-		int maxVal = Integer.parseInt(args[1]);
-		boolean vol = Boolean.parseBoolean(args[2]);
-		boolean solarisAffinity = Boolean.parseBoolean(args[3]);
-		int runs = 1;
-		if (args.length > 4) {
-			runs = Integer.parseInt(args[4]);
+		int numThreads = 0, counterGoal = 0, runs = 1;
+		boolean vol = false, solarisAffinity = false;
+		try {
+			numThreads = Integer.parseInt(args[0]);
+			counterGoal = Integer.parseInt(args[1]);
+			if (!args[2].equalsIgnoreCase("true")&&!args[2].equalsIgnoreCase("false")) {
+				throw(new Exception("Expected \"false\" or \"true\" as third argument!" ));
+			}
+			vol = Boolean.parseBoolean(args[2]);
+			if (!args[3].equalsIgnoreCase("true")&&!args[3].equalsIgnoreCase("false")) {
+				throw(new Exception("Expected \"false\" or \"true\" as 4th argument!" ));
+			}
+			solarisAffinity = Boolean.parseBoolean(args[3]);
+			runs = 1;
+			if (args.length > 4) {
+				runs = Integer.parseInt(args[4]);
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			System.out.println("ERROR parsing input! Expected input of to be of the form: ");
+			System.out.println(
+					"(int numThreads, int counterGoal, boolean volatile,  boolean solarisAffinity, int numRuns)");
+			return;
 		}
 
 		long runtime = 0;
@@ -34,6 +53,8 @@ public class Ex1 {
 		for (int r = 0; r < runs; r++) {
 
 			PetersonLock lock = new PetersonLock(numThreads);
+			// PetersonLockFair lock = new PetersonLockFair(numThreads);	// My fancy fair lock :)
+
 			Counter sharedCounter;
 
 			if (vol) {
@@ -52,21 +73,21 @@ public class Ex1 {
 
 			// Start threads
 			for (int i = 0; i < numThreads; i++) {
-				IncrementerThread thread = new IncrementerThread(sharedCounter, lock, maxVal, accesses);
+				IncrementerThread thread = new IncrementerThread(sharedCounter, lock, counterGoal, accesses);
 				executor.execute(thread);
 			}
 
 			long startTime = System.nanoTime();
-			
+
 			// Wait till all threads have stopped and output final counter value
 			executor.shutdown();
 			boolean finshed = executor.awaitTermination(5, TimeUnit.MINUTES);
 			if (finshed) {
 				runtime += System.nanoTime() - startTime;
 				finalCounter += sharedCounter.getCounter();
-				// Gather stats
+				// Gather statistics: Accumulate over all runs
 				int maxAcc = 0;
-				int minAcc = maxVal;
+				int minAcc = counterGoal;
 				for (int i = 0; i < accesses.length; i++) {
 					minAcc = accesses[i] < minAcc ? accesses[i] : minAcc;
 					maxAcc = accesses[i] > maxAcc ? accesses[i] : maxAcc;
@@ -77,7 +98,7 @@ public class Ex1 {
 
 		}
 
-		// Print average stats
+		// Print average statistics
 		System.out.println("Runtime [ms]: " + runtime / runs * 0.000001);
 		System.out.println("Final Counter: " + finalCounter / runs);
 		System.out.println("Minimum #Accesses: " + sumMins / runs);

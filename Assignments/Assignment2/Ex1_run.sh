@@ -1,8 +1,11 @@
 #!/bin/bash
 
-RESULT_FILE="Ex1.txt"
+javac *.java
+
+RESULT_FILE="results.txt"
 
 touch $RESULT_FILE
+>filename
 
 COUNTER_GOAL="300000"
 NUM_RUNS="50"
@@ -20,7 +23,7 @@ echo "================================== " >> ${RESULT_FILE}
 java Ex1 8 $COUNTER_GOAL true false $NUM_RUNS >> ${RESULT_FILE}
 echo "================================== " >> ${RESULT_FILE}
 
-COUNTER_GOAL="30000" >> ${RESULT_FILE}
+COUNTER_GOAL="1000" >> ${RESULT_FILE}
 echo "" >> ${RESULT_FILE}
 echo "Changed counter-goal for 1 processor case (takes too long otherwise)" >> ${RESULT_FILE}
 echo "" >> ${RESULT_FILE}

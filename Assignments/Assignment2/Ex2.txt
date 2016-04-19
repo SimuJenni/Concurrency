@@ -1,4 +1,4 @@
-Consider the case of three threads A, t2 and t3.
+Consider the case of three threads A, B and C.
 Suppose that we are in the situation:
 level[A] = 1, level[B] = 0, level[C] = 2, victim[1] = A, victim[2] = C
 
@@ -13,6 +13,14 @@ Note that B has overtake A in this example! A was at the doorway of level 1
 first (e.g level[A] = 1, victim[1] = A) but B entered level 1 while A still
 waits at the doorway.
 
+
 The algorithm could be made fair by including a timestamp at the doorway which
 has to be compared -> oldest thread per level can leave first... (No need for 
 victim flag in this case)
+
+One approach to make the algorithm fair is implemented in PetersonLockFair.java. 
+The idea here is to have a counter at each level working like a ticket machine:
+- When a thread is at the doorway of level L it takes a ticket of the level L counter and increments the counter (atomically!).
+- Each level has a second counter which keeps track of the next ticket that can pass the doorway. This counter is incremented by the thread which last left the level and is now waiting at the doorway of the next level (or during unlocking).
+- The test to go to the next level then consists of checking whether there is a thread in the same or higher level and if the ticket of this thread is next to pass.
+

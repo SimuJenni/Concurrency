@@ -30,6 +30,9 @@ public class PetersonLock implements Lock {
 	}
 	
 	private boolean existsHigher(int threadId, int threadLvl) {
+		/*
+		 * Checks whether there exists another thread at the same o higher level
+		 */
 		for (int i = 0; i < numThreads; i++) {
 			if (i == threadId) {
 				continue;
