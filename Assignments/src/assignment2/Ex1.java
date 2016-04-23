@@ -21,12 +21,12 @@ public class Ex1 {
 		try {
 			numThreads = Integer.parseInt(args[0]);
 			counterGoal = Integer.parseInt(args[1]);
-			if (!args[2].equalsIgnoreCase("true")&&!args[2].equalsIgnoreCase("false")) {
-				throw(new Exception("Expected \"false\" or \"true\" as third argument!" ));
+			if (!args[2].equalsIgnoreCase("true") && !args[2].equalsIgnoreCase("false")) {
+				throw (new Exception("Expected \"false\" or \"true\" as third argument!"));
 			}
 			vol = Boolean.parseBoolean(args[2]);
-			if (!args[3].equalsIgnoreCase("true")&&!args[3].equalsIgnoreCase("false")) {
-				throw(new Exception("Expected \"false\" or \"true\" as 4th argument!" ));
+			if (!args[3].equalsIgnoreCase("true") && !args[3].equalsIgnoreCase("false")) {
+				throw (new Exception("Expected \"false\" or \"true\" as 4th argument!"));
 			}
 			solarisAffinity = Boolean.parseBoolean(args[3]);
 			runs = 1;
@@ -53,7 +53,8 @@ public class Ex1 {
 		for (int r = 0; r < runs; r++) {
 
 			PetersonLock lock = new PetersonLock(numThreads);
-			// PetersonLockFair lock = new PetersonLockFair(numThreads);	// My fancy fair lock :)
+			// PetersonLockFair lock = new PetersonLockFair(numThreads); // My
+			// fancy fair lock :)
 
 			Counter sharedCounter;
 
