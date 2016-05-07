@@ -1,0 +1,25 @@
+1.
+The pot is designed as an array of booleans of the size of the pot. Each entry
+in the array corresponds to a meal and indicates whether the meal was already
+consumed.
+
+When a Savage wants to consume a meal he calls the consume method passing his
+thread-ID as an argument. He will then iterate over the array starting at a
+position dependent on his ID (better concurrency behavior than if all start on
+the same position). When examining a meal that meal is locked (need only lock
+this meal -> fine grained locking). If one of the meals is available, the meal
+will be consumed. Otherwise the method returns false, indicating that the pot is
+empty. In case of an empty pot, Savages will order a refill and the cook will do
+his duty. When the cook is refilling the pot, he locks the whole pot and first
+checks if the pot is really empty. 
+
+Clearly, the Savages can only eat if there's a meal in the pot and when they
+want to check if a meal is available they first have to lock it and can be sure
+that nobody else can consume it while they've locked it.
+
+2.
+To make the pot fair, it has been amended with a set containing the IDs of
+savages that have already eaten. When a Savage wants to consume but has already
+eaten while others haven't yet, he'll have to wait.
+When all Savages have eaten every one will get a chance to have another meal (
+i.e. the set is emptied). This clearly implies fairness.

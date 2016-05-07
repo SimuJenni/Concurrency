@@ -11,7 +11,8 @@ public class Pot {
 	private volatile Boolean[] pot;
 	private volatile boolean empty = true;
 	private int numSavages;
-	private volatile HashSet<Long> eaten;
+	private volatile HashSet<Long> eaten; // A set indicating which threads have
+											// eaten
 	Cook cook;
 
 	public Pot(int potSize, int nSavages) {
@@ -26,7 +27,8 @@ public class Pot {
 		 * true. Otherwise it returns false.
 		 */
 		while (eaten.contains(threadID) && eaten.size() < numSavages) {
-			// Wait till its my turn
+			// This savage has already eaten and there are others that haven't
+			// yet
 		}
 		for (int i = 0; i < pot.length; i++) {
 			int idx = (int) ((i + threadID) % pot.length); // Don't make every
@@ -37,8 +39,10 @@ public class Pot {
 					pot[idx] = false; // Consume..
 					System.out.println("Savage " + threadID + " eats like a pig!");
 					eaten.add(threadID);
-					if (eaten.size() == numSavages && pot.length > numSavages) {
-						eaten = new HashSet<Long>();
+					if (eaten.size() == numSavages) {
+						eaten = new HashSet<Long>(); // If all have eaten, allow
+														// anyone to grab some
+														// more
 					}
 					return true;
 				}
@@ -63,7 +67,6 @@ public class Pot {
 				pot[i] = true;
 			}
 			empty = false;
-			eaten = new HashSet<Long>();
 			return true;
 		} else {
 			return false;
